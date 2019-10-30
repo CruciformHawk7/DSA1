@@ -1,42 +1,49 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<stdbool.h>
 
-void warshalls(int* array, int m);
-int* acceptArray(int n);
-int  acceptNumber();
-void printArray(int* array, int size);
+#define SIZE 4
 
-void warshalls(int* array, int m) {
+bool* warshalls     (bool* array, int m);
+bool* acceptArray   (int n);
+int  acceptNumber   ();
+void printArray     (bool* array, int size);
+
+bool* warshalls(bool* arr, int m) {
+    bool* array = arr;
     int i, j, k;
-    for(i=0; i<m-1; i++) {
+    for(i=0; i<m; i++) {
         for(j=0; j<m; j++) {
-            if (array[i*m]==0) {
-                continue;
-            } else {
-
+            for (k=0; k<m; k++) {
+                array[j*m+k] = array[j*m+k] || (array[j*m+i] && array[i*m+k]);
             }
         }
     }
+    return array;
 }
 
-int* acceptArray(int n) {
+bool* acceptArray(int n) {
     int i, j;
-    int* p = (int *)malloc(n*n*sizeof(int));
+    int temp;
+    bool* p = (bool *)malloc(n*n*sizeof(bool));
     for (i=0; i<n; i++) {
         for (j=0; j<n; j++) {
             if (i==j) { 
-                p[i*n+j] = 0;
+                p[i*n+j] = false;
                 continue;
             } else {
-                printf("\nEnter %d -> %d", i, j);
-                scanf("%d", &p[i*n+j]);
+                printf("\nEnter %d -> %d: ", i, j);
+                scanf("%d", &temp);
+                if (temp==0) p[i*n+j] = false;
+                else p[i*n+j] = true;
             }
         }
     }
     printArray(p,n);
+    return p;
 }
 
-void printArray(int* array, int size) {
+void printArray(bool* array, int size) {
     int i, j;
     printf("\n");
     for(i=0;i<size;i++) {
@@ -48,5 +55,7 @@ void printArray(int* array, int size) {
 }
 
 void main() {
-    int *x = acceptArray(4);
+    bool *x = acceptArray(SIZE);
+    x=warshalls(x, SIZE);
+    printArray(x, SIZE);
 }
